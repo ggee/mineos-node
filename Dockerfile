@@ -1,8 +1,10 @@
-FROM ubuntu:focal
+FROM ubuntu:22.04
 LABEL MAINTAINER='William Dizon <wdchromium@gmail.com>'
 
 #update and accept all prompts
 ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get dist-upgrade -y
+
 RUN apt-get update && apt-get install -y \
   supervisor \
   rdiff-backup \
@@ -18,7 +20,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #install node from nodesource following instructions: https://github.com/nodesource/distributions#debinstall
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
   && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -33,6 +35,7 @@ RUN mkdir /usr/games/minecraft \
 RUN cd /usr/games/minecraft \
   && apt-get update \
   && apt-get install -y build-essential \
+  && rm package-lock.json \
   && npm install \
   && apt-get remove --purge -y build-essential \
   && apt-get autoremove -y \
