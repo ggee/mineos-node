@@ -1,5 +1,5 @@
 REGISTRY_NAME := 
-REPOSITORY_NAME := hexparrot/
+REPOSITORY_NAME := greggee/
 IMAGE_NAME := mineos
 TAG := :latest
 PLATFORMS := linux/amd64,linux/arm/v7,linux/arm64
