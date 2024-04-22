@@ -2,7 +2,7 @@ REGISTRY_NAME :=
 REPOSITORY_NAME := greggee/
 IMAGE_NAME := mineos
 TAG := :latest
-BUILD_TAG := :ubuntu22-node18
+BUILD_TAG := :java21
 PLATFORMS := linux/amd64,linux/arm/v7,linux/arm64
 
 .PHONY: getcommitid
