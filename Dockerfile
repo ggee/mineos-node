@@ -25,11 +25,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #download mineos from github
-RUN mkdir /usr/games/minecraft \
-  && cd /usr/games/minecraft \
-  && git clone --depth=1 https://github.com/hexparrot/mineos-node.git . \
-  && cp mineos.conf /etc/mineos.conf \
+RUN mkdir /usr/games/minecraft
+WORKDIR /usr/games/minecraft
+
+#  && git clone --depth=1 https://github.com/hexparrot/mineos-node.git . \
+COPY . .
+RUN cp mineos.conf /etc/mineos.conf \
   && chmod +x webui.js mineos_console.js service.js
+WORKDIR /
 
 #build npm deps and clean up apt for image minimalization
 RUN cd /usr/games/minecraft \
@@ -40,14 +43,14 @@ RUN cd /usr/games/minecraft \
   && apt-get remove --purge -y build-essential \
   && apt-get autoremove -y \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* .git*
 
 #configure and run supervisor
 RUN cp /usr/games/minecraft/init/supervisor_conf /etc/supervisor/conf.d/mineos.conf
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
 #entrypoint allowing for setting of mc password
-COPY entrypoint.sh /entrypoint.sh
+RUN cp /usr/games/minecraft/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8443 25565-25570
