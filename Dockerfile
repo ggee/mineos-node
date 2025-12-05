@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:noble
 LABEL MAINTAINER='William Dizon <wdchromium@gmail.com>'
 
 #update and accept all prompts
