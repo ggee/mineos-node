@@ -1,4 +1,4 @@
-REGISTRY_NAME := 
+REGISTRY_NAME := docker.io/
 REPOSITORY_NAME := greggee/
 IMAGE_NAME := mineos
 TAG := :latest
@@ -13,21 +13,21 @@ getcommitid:
 	$(eval COMMITID = $(shell git log -1 --pretty=format:"%H"))
 
 build: getcommitid
-	@docker build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID) -f Dockerfile .
-	@docker build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -f Dockerfile .
-	@docker build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG) -f Dockerfile .
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID) -f Dockerfile .
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -f Dockerfile .
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG) -f Dockerfile .
 
 publishcommit: build
-	docker login
-	docker push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
-	docker logout
+	podman login
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
+	podman logout
 
 publish: build
-	docker login
-	docker push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
-	docker push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG)
-	docker push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
-	docker logout
+	podman login
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG)
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
+	podman logout
 
 build-multiarch: getcommitid
 	@docker buildx build --platform $(PLATFORMS) --tag $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID) -f Dockerfile .
