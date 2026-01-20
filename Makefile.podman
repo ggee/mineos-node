@@ -1,0 +1,29 @@
+REGISTRY_NAME := docker.io/
+REPOSITORY_NAME := greggee/
+IMAGE_NAME := mineos
+TAG := :latest
+BUILD_TAG := :java21
+
+.PHONY: getcommitid
+all: build
+
+getcommitid: 
+	$(eval COMMITID = $(shell git log -1 --pretty=format:"%H"))
+
+build: getcommitid
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID) -f Dockerfile .
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG) -f Dockerfile .
+	@podman build -t $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG) -f Dockerfile .
+
+publishcommit: build
+	podman login
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
+	podman logout
+
+publish: build
+	podman login
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(TAG)
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME)$(BUILD_TAG)
+	podman push $(REGISTRY_NAME)$(REPOSITORY_NAME)$(IMAGE_NAME):$(COMMITID)
+	podman logout
+
