@@ -3,7 +3,7 @@ REPOSITORY_NAME := greggee/
 IMAGE_NAME := mineos
 TAG := :latest
 #PLATFORMS := linux/arm64
-PLATFORMS := linux/amd64,linux/arm/v7,linux/arm64
+PLATFORMS := linux/amd64,linux/arm64
 
 .PHONY: getcommitid
 all: build
